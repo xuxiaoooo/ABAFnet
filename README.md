@@ -27,7 +27,7 @@ _**Note:** The code we released is not fully final in some details, some parts a
 ---
 
 ## 🛠️ Installation and Usage
-1. **Clone the repository**
+Clone the repository
 ```bash
 git clone https://github.com/username/ISFARNet.git
 cd ISFARNet
