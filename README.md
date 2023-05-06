@@ -36,7 +36,7 @@ cd ISFARNet
 
 ## 📊 Results
 
-Our proposed ISFARNet achieved state-of-the-art performance in depression detection. Detailed results and comparison with other methods can be found in our paper.
+Our proposed ISFARNet achieved state-of-the-art performance in depression detection with multi features. Detailed results and comparison with other methods can be found in our paper.
 
 ---
 
