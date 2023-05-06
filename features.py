@@ -8,12 +8,11 @@ mpl.use('agg')
 import matplotlib.pyplot as plt
 import librosa.display
 
-path = r'/home/user/xuxiao/DeepL/zxxaudio/'
+path = your audio path
 for item in os.listdir(path):
     audio_file = path+item
     y, sr = librosa.load(audio_file, sr=None)
 
-    item = item.replace('.wav','').replace('.WAV','').replace('-P','')
     os.system('mkdir -p zxx-image-features/'+item)
 
     envelope = librosa.feature.rms(y=y, hop_length=512)
