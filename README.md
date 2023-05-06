@@ -9,12 +9,13 @@ This repository contains the implementation of our proposed **ISFARNet**, a nove
 
 _**Note:** The code we released is not fully final in some details, some parts are debug versions of the code, just the model structure parts are correct. Due to our concern about data privacy, we have hidden the loading part about the data, please contact us by email if you need._
 
-- `test.py` is the code for image features.
-- `HSFs.py` is the code for num vector features.
-- `opensmile.py` is the code for using opensmile tool.
-- `pre.py` is the code for extracting image features.
-- `fusion.py` is the code for fusion model.
-- `compare.py` is the code for model performance comparation.
+- `test.py` predict image features.
+- `HSFs.py` predict num vector features.
+- `opensmile.py` use opensmile tool.
+- `pre.py` extract image features.
+- `fusion.py` fusion model.
+- `compare.py` model performance comparation.
+- `validation.py` load model and validate on other datasets.
 
 ---
 
