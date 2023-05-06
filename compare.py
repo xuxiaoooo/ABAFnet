@@ -53,19 +53,17 @@ class CustomModelDeepLSTM(nn.Module):
         return x
 
 def load_data(excel_file, audio_folder):
-    hdf1 = pd.read_excel(excel_file, sheet_name='病人组', engine='openpyxl')
-    hdf2 = pd.read_excel(excel_file, sheet_name='健康组', engine='openpyxl')
-    hdf = pd.concat([hdf1, hdf2], axis=0).reset_index(drop=True)[['group', 'standard_id']]
+    # load your own files
 
     audio_files = []
     labels = []
 
     for _, row in hdf.iterrows():
-        audio_id = row['standard_id']
-        label = row['group']
+        audio_id = row['id']
+        label = row['class']
         if label != 0:
             label = 1
-        audio_file = os.path.join(audio_folder, f"{audio_id}-P.wav")
+        audio_file = os.path.join(audio_folder, f"{audio_id}.wav")
         # if os.path.exists(audio_file):
         for item in os.listdir(audio_folder):
             if item.startswith(audio_id):
@@ -196,6 +194,6 @@ def main(excel_file, audio_folder_path):
     train_and_evaluate_model(train_loader, val_loader, model2, device)
 
 if __name__ == '__main__':
-    excel_file = "/home/user/xuxiao/DeepL/HAMD（13-24）-155.xlsx"
-    audio_folder_path = "/home/user/xuxiao/DeepL/ffmpegaudio"
+    excel_file = #
+    audio_folder_path = #
     main(excel_file, audio_folder_path)
