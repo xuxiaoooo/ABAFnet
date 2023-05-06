@@ -32,8 +32,12 @@ _**Note:** The code we released is not fully final in some details, some parts a
 git clone https://github.com/username/ISFARNet.git
 cd ISFARNet
 
+---
+
 ## 📊 Results
 Our proposed ISFARNet achieved state-of-the-art performance in depression detection. Detailed results and comparison with other methods can be found in our paper.
+
+---
 
 ## 📄 Citation
 If you find this work helpful, please cite our paper:
@@ -44,5 +48,9 @@ If you find this work helpful, please cite our paper:
   year={2023}
 }
 
+---
+
 ## 📧 Contact
 For any questions, feel free to open an issue or contact us at xuxiaooo1111@gmail.com
+
+---
