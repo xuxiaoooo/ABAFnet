@@ -32,10 +32,10 @@ _**Note:** The code we released is not fully final in some details, some parts a
 git clone https://github.com/username/ISFARNet.git
 cd ISFARNet
 
-📊 Results
+## 📊 Results
 Our proposed ISFARNet achieved state-of-the-art performance in depression detection. Detailed results and comparison with other methods can be found in our paper.
 
-📄 Citation
+## 📄 Citation
 If you find this work helpful, please cite our paper:
 @inproceedings{author2023isfarnet,
   title={A Novel Integrated Speech Feature Attention-based Recurrent Network Approach for Efficient Depression Detection and Analysis},
@@ -44,5 +44,5 @@ If you find this work helpful, please cite our paper:
   year={2023}
 }
 
-📧 Contact
+## 📧 Contact
 For any questions, feel free to open an issue or contact us at xuxiaooo1111@gmail.com
