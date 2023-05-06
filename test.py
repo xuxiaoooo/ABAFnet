@@ -145,13 +145,7 @@ data_transform = transforms.Compose([
 
 file_list = []
 label_list = []
-hdf1 = pd.read_excel('HAMD（13-24）-155.xlsx', sheet_name='病人组', engine='openpyxl')
-hdf2 = pd.read_excel('HAMD（13-24）-155.xlsx', sheet_name='健康组', engine='openpyxl')
-hdf = pd.concat([hdf1, hdf2], axis=0).reset_index(drop=True)[['group', 'standard_id']]
-for i in range(len(hdf)):
-    file_list.append('/home/user/xuxiao/DeepL/image-features/' + hdf['standard_id'][i] + '/mel_spectrogram.png')
-    label_list.append(0 if hdf['group'][i] == 0 else 1)
-print('mel_spectrogram')
+#load your own data
 all = list(zip(file_list, label_list))
 random.shuffle(all)
 file_list[:], label_list[:] = zip(*all)
