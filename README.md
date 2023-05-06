@@ -29,7 +29,7 @@ _**Note:** The code we released is not fully final in some details, some parts a
 ## 🛠️ Installation and Usage
 **Clone the repository**
 ```bash
-git clone https://github.com/username/ISFARNet.git
+git clone https://github.com/xuxiaoooo/ISFARNet.git
 cd ISFARNet
 ```
 ---
