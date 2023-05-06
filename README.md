@@ -43,12 +43,12 @@ Our proposed ISFARNet achieved state-of-the-art performance in depression detect
 ## 📄 Citation
 
 If you find this work helpful, please cite our paper:
-@inproceedings{author2023isfarnet,
+```@inproceedings{author2023isfarnet,
   title={A Novel Integrated Speech Feature Attention-based Recurrent Network Approach for Efficient Depression Detection and Analysis},
   author={Author, A. and Coauthor, B.},
   booktitle={Conference Name},
   year={2023}
-}
+}```
 
 ---
 
