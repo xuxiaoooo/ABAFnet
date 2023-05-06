@@ -16,8 +16,8 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 def selectAudio():
-    source_folder = "/home/user/xuxiao/DeepL/validationaudio"
-    destination_folder = "/home/user/xuxiao/DeepL/validationaudioselected"
+    source_folder = #
+    destination_folder = #
 
     if not os.path.exists(destination_folder):
         os.makedirs(destination_folder)
@@ -46,10 +46,10 @@ def selectAudio():
         shutil.copyfile(src, dst)
 
 def emolarge():
-    audio_path = r'/home/user/xuxiao/DeepL/validationaudioselected/'
-    opensmile_res_path = r'/home/user/xuxiao/DeepL/opensmilehandle/'
-    open_smile_extract_path = r'/home/user/xuxiao/DeepL/opensmile-3.0.1-linux-x64/bin/SMILExtract'
-    config = r'/home/user/xuxiao/DeepL/opensmile-3.0.1-linux-x64/config/misc/emo_large.conf'
+    audio_path = #
+    opensmile_res_path = #
+    open_smile_extract_path = #
+    config = #
     
     if not os.path.exists(opensmile_res_path):
         os.makedirs(opensmile_res_path)
@@ -61,8 +61,8 @@ def emolarge():
         os.system(open_smile_extract_path + ' -C ' + config + ' -I ' + input_file + ' -O ' + output_file)
 
 def merge_txt_to_csv():
-    input_folder = r'/home/user/xuxiao/DeepL/opensmilehandle/'
-    output_csv = r'/home/user/xuxiao/DeepL/validate_emo_large.csv'
+    input_folder = #
+    output_csv = #
     all_data = []
     for txt_file in os.listdir(input_folder):
         if txt_file.endswith('.txt'):
@@ -220,26 +220,10 @@ def validate(random_state):
         transforms.Resize((224, 224)),
         transforms.ToTensor(),
     ])
-    hdf = pd.read_excel('dass_filtered.xlsx').query('age >= 16').reset_index(drop=True)
-    class_0 = hdf[hdf['class'] == 1]
-    class_1 = hdf[hdf['class'] == 0]
-    random_state = random_state #njmu seed 3855
-    class_0_resampled = class_0.sample(len(class_0), random_state=random_state)
-    resampled_hdf = pd.concat([class_0_resampled, class_1], axis=0)
-    hdf = resampled_hdf.sample(frac=1, random_state=random_state).reset_index(drop=True)
-    features = pd.read_csv('zxx_emolarge_features.csv')
-    header = pd.read_csv('reduced_data.csv').columns
-    data = pd.merge(hdf,features,left_on='cust_id',right_on='name')[header.append(pd.Index(['class'])).append(pd.Index(['cust_id']))]
-    data_list_img1, data_list_img2, data_list_img3 = [], [], []
-    for i in range(len(hdf)):
-        data_list_img1.append('/home/user/xuxiao/DeepL/zxx-image-features/' + str(data['cust_id'][i]) + '/envelope.png')
-        data_list_img2.append('/home/user/xuxiao/DeepL/zxx-image-features/' + str(data['cust_id'][i]) + '/spectrogram.png')
-        data_list_img3.append('/home/user/xuxiao/DeepL/zxx-image-features/' + str(data['cust_id'][i]) + '/mel_spectrogram.png')
-    data_list_num = data.drop(columns=['class','cust_id']).values.tolist()
-    label_list = [1 if x != 0 else x for x in data['class'].values.tolist()]
+    # your own data
     dataset = CustomDataset(data_list_img1=data_list_img1,data_list_img2=data_list_img2,data_list_img3=data_list_img3,data_list_num=data_list_num, label_list=label_list, transform=data_transform)
 
-    model_path = '/home/user/xuxiao/DeepL/best_model.pth'
+    model_path = 'best_model.pth'
     activation_function = nn.ReLU()
     img_model = ImageModel(activation_function)
     input_size_img1, input_size_img2, input_size_img3, input_size_num = dataset.feature_size()
@@ -312,27 +296,4 @@ def validate(random_state):
     # return accuracy
 
 if __name__ == "__main__":
-    # emolarge()
-    # merge_txt_to_csv()
-    # 找随机种子
-    # n = 10
-    # max_values = [0] * n
-    # max_seeds = [0] * n
-
-    # for i in range(100, 1000, 100):  # 可以根据需要更改循环次数
-    #     print(f"当前随机种子为：{i}")
-    #     current_value = validate(i)
-    #     smallest_value = min(max_values)
-
-    #     if current_value > smallest_value:
-    #         index = max_values.index(smallest_value)
-    #         max_values[index] = current_value
-    #         max_seeds[index] = i
-
-    # sorted_indices = sorted(range(len(max_values)), key=lambda k: max_values[k], reverse=True)
-    # max_values = [max_values[i] for i in sorted_indices]
-    # max_seeds = [max_seeds[i] for i in sorted_indices]
-
-    # for i in range(n):
-    #     print(f"第 {i + 1} 大的返回值为：{max_values[i]}, 对应的随机种子是：{max_seeds[i]}")
     validate(42)
