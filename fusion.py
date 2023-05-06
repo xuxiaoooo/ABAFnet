@@ -184,18 +184,6 @@ data_transform = transforms.Compose([
 ])
 
 # Load your data from file
-hdf1 = pd.read_excel('HAMD（13-24）-155.xlsx', sheet_name='病人组', engine='openpyxl')
-hdf2 = pd.read_excel('HAMD（13-24）-155.xlsx', sheet_name='健康组', engine='openpyxl')
-hdf = pd.concat([hdf1, hdf2], axis=0).reset_index(drop=True)[['group', 'standard_id']]
-features = pd.read_csv('emo_large_res.csv')
-header = pd.read_csv('reduced_data.csv').columns
-data = pd.merge(hdf,features,left_on='standard_id',right_on='name')[header.append(pd.Index(['group'])).append(pd.Index(['standard_id']))]
-data_list_img1, data_list_img2, data_list_img3 = [], [], []
-
-for i in range(len(hdf)):
-    data_list_img1.append('/home/user/xuxiao/DeepL/image-features/' + data['standard_id'][i] + '/envelope.png')
-    data_list_img2.append('/home/user/xuxiao/DeepL/image-features/' + data['standard_id'][i] + '/spectrogram.png')
-    data_list_img3.append('/home/user/xuxiao/DeepL/image-features/' + data['standard_id'][i] + '/mel_spectrogram.png')
 
 # Split data into features (data_list) and labels (label_list)
 data_list_num = data.drop(columns=['group','standard_id']).values.tolist()
