@@ -48,7 +48,8 @@ If you find this work helpful, please cite our paper:
   author={Author, A. and Coauthor, B.},
   booktitle={Conference Name},
   year={2023}
-}```
+}
+```
 
 ---
 
