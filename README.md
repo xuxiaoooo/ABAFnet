@@ -37,8 +37,7 @@ Our proposed ABAFnet achieved state-of-the-art performance in depression detecti
 
 If you find this work helpful, please cite our paper:
 ```
-{
-  @inproceedings{author2023isfarnet,
+@inproceedings{author2023isfarnet,
   title={Attention-Based Acoustic Feature Fusion Network for Depression Detection},
   author={Xiao Xu.},
   booktitle={Conference Name},
