@@ -1,5 +1,5 @@
 # ABAFnet
-A Novel Attention-Based Acoustic Feature Fusion Network Approach for Efficient Depression Detection and Analysis
+Attention-Based Acoustic Feature Fusion Network for Depression Detection
 
 ---
 
@@ -8,14 +8,6 @@ A Novel Attention-Based Acoustic Feature Fusion Network Approach for Efficient D
 This repository contains the implementation of our proposed **ABAFnet**, a novel integrated speech feature attention-based recurrent network for efficient depression detection and analysis. The main goal of this project is to provide an accurate and efficient approach for detecting depression using speech data.
 
 _**Note:** The code we released is not fully final in some details, some parts are debug versions of the code, just the model structure parts are correct. Due to our concern about data privacy, we have hidden the loading part about the data, please contact us by email if you need._
-
-- `test.py` predict image features.
-- `HSFs.py` predict num vector features.
-- `opensmile.py` use opensmile tool.
-- `pre.py` extract image features.
-- `fusion.py` fusion model.
-- `compare.py` model performance comparation.
-- `validation.py` load model and validate on other datasets.
 
 ---
 
@@ -31,7 +23,7 @@ _**Note:** The code we released is not fully final in some details, some parts a
 **Clone the repository**
 ```bash
 git clone https://github.com/xuxiaoooo/ABAFnet.git
-cd ISFARNet
+cd ABAFnet
 ```
 ---
 
@@ -45,8 +37,8 @@ Our proposed ABAFnet achieved state-of-the-art performance in depression detecti
 
 If you find this work helpful, please cite our paper:
 ```@inproceedings{author2023isfarnet,
-  title={A Novel Attention-Based Acoustic Feature Fusion Network Approach for Efficient Depression Detection and Analysis},
-  author={Author, A. and Coauthor, B.},
+  title={Attention-Based Acoustic Feature Fusion Network for Depression Detection},
+  author={Xiao Xu.},
   booktitle={Conference Name},
   year={2023}
 }
