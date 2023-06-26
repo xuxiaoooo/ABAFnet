@@ -175,12 +175,18 @@ folder_labels = {
     "Moderate": 2,
     "Severe": 3,
 }
+
 base_path = '/home/user/xuxiao/ABAFnet/audio_data/CNRAC'
 feature_path = '/home/user/xuxiao/ABAFnet/features/CNRAC_features'
 df = pd.read_csv('/home/user/xuxiao/ABAFnet/CNRAC_features/emo_large_res.csv')
-data_list_img1, data_list_img2, data_list_img3, data_list_num = [], [], [], []
-label_list = []
+
+group_data = {}
+group_labels = {}
+
+# Collect data for each group
 for folder, label in folder_labels.items():
+    data_list_img1, data_list_img2, data_list_img3, data_list_num = [], [], [], []
+    label_list = []
     for root, dirs, files in os.walk(os.path.join(base_path, folder)):
         for file in files:
             data_list_img1.append(os.path.join(feature_path, file[:-6], 'envelope.png'))
@@ -189,55 +195,25 @@ for folder, label in folder_labels.items():
             data_list_num.append(df[df['name'] == file[:-6]].drop(columns=['name','class']).values.tolist()[0])
             label_list.append(label)
 
-dataset = CustomDataset(data_list_img1=data_list_img1,data_list_img2=data_list_img2,data_list_img3=data_list_img3,data_list_num=data_list_num, label_list=label_list, transform=data_transform)
-
-
-# Load your data from file
-hdf1 = pd.read_excel('HAMD（13-24）-155.xlsx', sheet_name='病人组', engine='openpyxl')
-hdf2 = pd.read_excel('HAMD（13-24）-155.xlsx', sheet_name='健康组', engine='openpyxl')
-hdf = pd.concat([hdf1, hdf2], axis=0).reset_index(drop=True)[['group', 'standard_id', 'HAMD17_total_score']]
-features = pd.read_csv('emo_large_res.csv')
-header = pd.read_csv('reduced_data.csv').columns
-data = pd.merge(hdf, features, left_on='standard_id', right_on='name')[header.append(pd.Index(['group', 'standard_id', 'HAMD17_total_score']))]
-
-data_list_img1, data_list_img2, data_list_img3 = [], [], []
-for i in range(len(hdf)):
-    data_list_img1.append('/home/user/xuxiao/DeepL/image-features/' + data['standard_id'][i] + '/envelope.png')
-    data_list_img2.append('/home/user/xuxiao/DeepL/image-features/' + data['standard_id'][i] + '/spectrogram.png')
-    data_list_img3.append('/home/user/xuxiao/DeepL/image-features/' + data['standard_id'][i] + '/mel_spectrogram.png')
-
-data_list_num = data.drop(columns=['group', 'standard_id', 'HAMD17_total_score']).values.tolist()
-
-# Define the groups
-healthy_group = data[data['group'] == 0]
-mild_group = data[(data['group'] != 0) & (data['HAMD17_total_score'] >= 8) & (data['HAMD17_total_score'] <= 16)]
-moderate_group = data[(data['group'] != 0) & (data['HAMD17_total_score'] >= 17) & (data['HAMD17_total_score'] <= 23)]
-severe_group = data[(data['group'] != 0) & (data['HAMD17_total_score'] >= 24)]
+    group_data[folder] = np.array(list(zip(data_list_img1, data_list_img2, data_list_img3, data_list_num)), dtype=object)
+    group_labels[folder] = np.array(label_list)
 
 # Define the experiments
 experiments = [
-    ("Healthy vs Mild", healthy_group, mild_group),
-    ("Healthy vs Moderate", healthy_group, moderate_group),
-    ("Healthy vs Severe", healthy_group, severe_group),
-    ("Mild vs Moderate", mild_group, moderate_group),
-    ("Mild vs Severe", mild_group, severe_group),
-    ("Moderate vs Severe", moderate_group, severe_group),
+    ("NC vs Mild", "NC", "Mild"),
+    ("NC vs Moderate", "NC", "Moderate"),
+    ("NC vs Severe", "NC", "Severe"),
+    ("Mild vs Moderate", "Mild", "Moderate"),
+    ("Mild vs Severe", "Mild", "Severe"),
+    ("Moderate vs Severe", "Moderate", "Severe"),
 ]
 
 for experiment_name, group1, group2 in experiments:
-    group1_data = np.array(list(zip(group1['standard_id'].apply(lambda x: '/home/user/xuxiao/DeepL/image-features/' + x + '/envelope.png'),
-                                     group1['standard_id'].apply(lambda x: '/home/user/xuxiao/DeepL/image-features/' + x + '/spectrogram.png'),
-                                     group1['standard_id'].apply(lambda x: '/home/user/xuxiao/DeepL/image-features/' + x + '/mel_spectrogram.png'),
-                                     group1.drop(columns=['group', 'standard_id', 'HAMD17_total_score']).values.tolist())), dtype=object)
-    group1_labels = np.zeros(len(group1))
-    
-    group2_data = np.array(list(zip(group2['standard_id'].apply(lambda x: '/home/user/xuxiao/DeepL/image-features/' + x + '/envelope.png'),
-                                     group2['standard_id'].apply(lambda x: '/home/user/xuxiao/DeepL/image-features/' + x + '/spectrogram.png'),
-                                     group2['standard_id'].apply(lambda x: '/home/user/xuxiao/DeepL/image-features/' + x + '/mel_spectrogram.png'),
-                                     group2.drop(columns=['group', 'standard_id', 'HAMD17_total_score']).values.tolist())), dtype=object)
-    group2_labels = np.ones(len(group2))
+    group1_data = group_data[group1]
+    group1_labels = group_labels[group1]
+    group2_data = group_data[group2]
+    group2_labels = group_labels[group2]
     combined_data = np.concatenate([group1_data, group2_data], axis=0)
     combined_labels = np.concatenate([group1_labels, group2_labels], axis=0)
 
     run_experiment(combined_data, combined_labels, experiment_name)
-
