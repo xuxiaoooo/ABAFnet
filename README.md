@@ -1,3 +1,5 @@
+**[English](README.md)** | **[中文](README_CN.md)**
+
 # ABAFnet
 Attention-Based Acoustic Feature Fusion Network for Depression Detection
 
