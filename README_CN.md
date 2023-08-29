@@ -35,7 +35,8 @@ cd ABAFnet
 ---
 
 ## 📄 引用
-
+ 文章链接:https://arxiv.org/pdf/2308.12478v1.pdf
+ 
 如果你发现这项工作有帮助，请引用我们的论文：
 ```
 @misc{xu2023attentionbased,
