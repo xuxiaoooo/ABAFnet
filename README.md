@@ -36,7 +36,7 @@ Our proposed ABAFnet achieved state-of-the-art performance in speech-based depre
 ---
 
 ## 📄 Citation
-
+Our Paper Link: https://arxiv.org/pdf/2308.12478v1.pdf
 If you find this work helpful, please cite our paper:
 ```
 @misc{xu2023attentionbased,
