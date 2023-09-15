@@ -35,8 +35,10 @@ cd ABAFnet
 ---
 
 ## 📄 引用
- 文章链接:https://arxiv.org/pdf/2308.12478v1.pdf
- 
+文章链接:
+Arxiv: https://arxiv.org/pdf/2308.12478v1.pdf
+Research Gate: https://www.researchgate.net/publication/373364067_Attention-Based_Acoustic_Feature_Fusion_Network_for_Depression_Detection#fullTextFileContent
+
 如果你发现这项工作有帮助，请引用我们的论文：
 ```
 @misc{xu2023attentionbased,
