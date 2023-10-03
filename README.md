@@ -6,6 +6,7 @@ Attention-Based Acoustic Feature Fusion Network for Depression Detection
 ---
 
 ## 📙 Dataset Application
+
       Our team will work on multi-population, multi-modal big data set acquisition and artificial intelligence methods.
 
       The public request of data will be firstly obtained in all the related repositories of our team (most of them are not licensed for public use at the moment due to the privacy policy) (if you have questions about the article as a reviewer, please contact the corresponding author to ask for the feature data files).
