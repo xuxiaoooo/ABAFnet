@@ -5,6 +5,15 @@ Attention-Based Acoustic Feature Fusion Network for Depression Detection
 
 ---
 
+# Dataset Application
+Our team will work on multi-population, multi-modal big data set acquisition and artificial intelligence methods.
+
+The public request of data will be firstly obtained in all the related repositories of our team (most of them are not licensed for public use at the moment due to the privacy policy) (if you have questions about the article as a reviewer, please contact the corresponding author to ask for the feature data files).
+
+For audio/video related data and research, please stay tuned to this code repository, and for brain imaging, EEG, physiological signaling data, please follow corresponding author Xizhe Zhang's subsequent papers.
+
+---
+
 ## 📌 Introduction
 
 This repository contains the implementation of our proposed **ABAFnet**, a novel integrated speech feature attention-based recurrent network for efficient depression detection and analysis. The main goal of this project is to provide an accurate and efficient approach for detecting depression using speech data.
