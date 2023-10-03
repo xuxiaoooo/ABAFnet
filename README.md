@@ -11,7 +11,7 @@ Our team will work on multi-population, multi-modal big data set acquisition and
 
 The public request of data will be firstly obtained in all the related repositories of our team (most of them are not licensed for public use at the moment due to the privacy policy)
 
-_**Note:** (if you have questions about the article as a reviewer, please contact the corresponding author to ask for the feature data files).
+**Note:** If you have questions about the article as a reviewer, please contact the corresponding author to ask for the feature data files.
 
 For audio/video related data and research, please stay tuned to this code repository, and for brain imaging, EEG, physiological signaling data, please follow corresponding author Xizhe Zhang's subsequent papers.
 
