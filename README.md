@@ -6,8 +6,8 @@
   <img src="https://github.com/xuxiaoooo/ABAFnet/blob/main/draw/LOGO 1.png" width="400" height="200" alt="logo"/>
 </p>
 
-<p align="center">
-  Attention-Based Acoustic Feature Fusion Network for Depression Detection
+<p style="font-weight:bold; font-size:larger;">  
+  Attention-Based Acoustic Feature Fusion Network for Depression Detection  
 </p>
 
 <p align="center">
