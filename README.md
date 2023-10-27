@@ -3,7 +3,7 @@
 # ABAFnet
 Attention-Based Acoustic Feature Fusion Network for Depression Detection
 
-https://github.com/xuxiaoooo/ABAFnet/blob/main/draw/fig2.jpg
+![Github Stats](https://github.com/xuxiaoooo/ABAFnet/blob/main/draw/fig2.jpg)
 ---
 
 ## 📙 Dataset Application
