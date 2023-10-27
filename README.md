@@ -3,7 +3,7 @@
 # ABAFnet
 Attention-Based Acoustic Feature Fusion Network for Depression Detection
 
-<img src="https://github.com/xuxiaoooo/ABAFnet/blob/main/draw/fig2.jpg" width="200" height="200" alt="Backbone Flow"/><br/>
+<img src="https://github.com/xuxiaoooo/ABAFnet/blob/main/draw/fig2.jpg" width="500" height="500" alt="Backbone Flow"/><br/>
 
 ---
 
