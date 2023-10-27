@@ -1,9 +1,18 @@
 **[English](README.md)** | **[中文](README_CN.md)**
 
-# ABAFnet <img src="https://github.com/xuxiaoooo/ABAFnet/blob/main/draw/LOGO 1.png" width="400" height="200" alt="logo"/><br/>
-Attention-Based Acoustic Feature Fusion Network for Depression Detection
+# ABAFnet
 
-<img src="https://github.com/xuxiaoooo/ABAFnet/blob/main/draw/fig2.jpg" width="600" height="600" alt="Backbone Flow"/><br/>
+<p align="center">
+  <img src="https://github.com/xuxiaoooo/ABAFnet/blob/main/draw/LOGO 1.png" width="400" height="200" alt="logo"/>
+</p>
+
+<p align="center">
+  Attention-Based Acoustic Feature Fusion Network for Depression Detection
+</p>
+
+<p align="center">
+  <img src="https://github.com/xuxiaoooo/ABAFnet/blob/main/draw/fig2.jpg" width="600" height="600" alt="Backbone Flow"/>
+</p>
 
 ---
 
