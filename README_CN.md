@@ -1,9 +1,19 @@
 **[English](README.md)** | **[中文](README_CN.md)**
 
 # ABAFnet
-基于注意力机制的声学特征融合网络用于抑郁症检测
 
-<img src="https://github.com/xuxiaoooo/ABAFnet/blob/main/draw/fig2.jpg" width="600" height="600" alt="Backbone Flow"/><br/>
+<p align="center">
+  <img src="https://github.com/xuxiaoooo/ABAFnet/blob/main/draw/LOGO 1.png" width="400" height="200" alt="logo"/>
+</p>
+
+<p align="center">
+  基于注意力机制的声学特征融合网络用于抑郁症检测
+</p>
+
+<p align="center">
+  <img src="https://github.com/xuxiaoooo/ABAFnet/blob/main/draw/fig2.jpg" width="600" height="600" alt="Backbone Flow"/>
+</p>
+
 
 ---
 
