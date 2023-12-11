@@ -25,7 +25,7 @@ The public request of data will be firstly obtained in all the related repositor
 
 For audio/video related data and research, please stay tuned to this code repository, and for brain imaging, EEG, physiological signaling data, please follow corresponding author Xizhe Zhang's subsequent papers.
 
-**Note:** The CNRAC can be requested at the time of publication of this paper ASAP.
+**Note:** The CNRAC can be publicly requested at the time of publication of this paper ASAP.
 
 ---
 
