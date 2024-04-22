@@ -50,7 +50,7 @@ def train_and_evaluate(model, train_loader, val_loader, criterion, optimizer_cla
             optimizer.step()
         train_end_time = time.time()  # 训练结束时间
 
-        # Validation
+        # Validation 
         val_start_time = time.time()  # 验证开始时间
         model.eval()
         val_preds = []
@@ -77,7 +77,7 @@ def train_and_evaluate(model, train_loader, val_loader, criterion, optimizer_cla
                 break
 
     train_time = train_end_time - train_start_time  # 训练总时间
-    val_time = val_end_time - val_start_time  # 验证总时间
+    val_time = val_end_time - val_start_time  # 验证总时间 
     print(f"Total training time: {train_time} seconds.")
     print(f"Total validation time: {val_time} seconds.")
 
@@ -112,16 +112,23 @@ for folder, label in folder_labels.items():
 
 dataset = CustomDataset(data_list_img1=data_list_img1,data_list_img2=data_list_img2,data_list_img3=data_list_img3,data_list_num=data_list_num, label_list=label_list, transform=data_transform)
 
+# 划分训练集、验证集和测试集
+train_size = int(0.7 * len(dataset))
+val_size = int(0.2 * len(dataset))
+test_size = len(dataset) - train_size - val_size
+train_dataset, val_dataset, test_dataset = torch.utils.data.random_split(dataset, [train_size, val_size, test_size])
+
 # Set up K-Fold cross-validation, parameter grid, and other configurations
-k_folds = 5
+k_folds = 10
 num_epochs = 100
 device = torch.device('cuda')
 
 param_grid = {
     'criterion': [nn.BCEWithLogitsLoss()],
     'activation': [nn.ReLU()],
-    'optimizer': [optim.SGD],
-    'learning_rate': [0.001],
+    'optimizer': [optim.SDG],
+    'learning_rate': [0.000001],
+    'batch_size': [8],
 }
 
 kf = StratifiedKFold(n_splits=k_folds)
@@ -150,7 +157,7 @@ for params in ParameterGrid(param_grid):
     avg_roc = 0
     total_confusion_matrix = None
 
-    # 在每一个参数设置开始前，清空列表
+    # 在每一个参数设置开始前,清空列表
     accuracy_list.clear()
     precision_list.clear()
     recall_list.clear()
@@ -172,11 +179,11 @@ for params in ParameterGrid(param_grid):
 
         train_set = Subset(dataset, train_idx)
         val_set= Subset(dataset, val_idx)
-        train_loader = DataLoader(train_set, batch_size=32, shuffle=True)
-        val_loader = DataLoader(val_set, batch_size=32, shuffle=False)
+        train_loader = DataLoader(train_set, batch_size=params['batch_size'], shuffle=True)
+        val_loader = DataLoader(val_set, batch_size=params['batch_size'], shuffle=False)
         criterion = params['criterion']
         optimizer_class = params['optimizer']
-        val_acc, best_fold_model, train_time, val_time = train_and_evaluate(model, train_loader, val_loader, criterion, optimizer_class, params['learning_rate'], device, num_epochs, patience=20)
+        val_acc, best_fold_model, train_time, val_time = train_and_evaluate(model, train_loader, val_loader, criterion, optimizer_class, params['learning_rate'], device, num_epochs, patience=5)
         total_train_time += train_time
         total_test_time += val_time
 
@@ -262,7 +269,7 @@ print(f"ROC AUC: {avg_roc:.3f}±{std_roc:.2f}")
 print("Total confusion matrix:\n", total_confusion_matrix)
 
 # 保存模型和 ROC 曲线
-# torch.save(best_model.state_dict(), '/home/user/xuxiao/ABAFnet/model/'+'best_model.pth')
-# import pickle
-# with open("/home/user/xuxiao/ABAFnet/draw/roc_curve_data_fusion.pkl", "wb") as f:
-#     pickle.dump(roc_curves, f)
+torch.save(best_model.state_dict(), '/home/user/xuxiao/ABAFnet/model/'+'best_model.pth')
+import pickle
+with open("/home/user/xuxiao/ABAFnet/draw/roc_curve_data_fusion.pkl", "wb") as f:
+    pickle.dump(roc_curves, f)

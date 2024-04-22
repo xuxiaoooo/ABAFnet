@@ -1,4 +1,3 @@
-# Depression Detection Task
 import sys, os
 sys.path.append('../utils/')
 import numpy as np
@@ -100,20 +99,26 @@ base_path = '/home/user/xuxiao/ABAFnet/audio_data/CNRAC'
 feature_path = '/home/user/xuxiao/ABAFnet/features/CNRAC_features'
 df = pd.read_csv('/home/user/xuxiao/ABAFnet/features/CNRAC_features/emo_large_res.csv')
 data_list_img1, data_list_img2, data_list_img3, data_list_num = [], [], [], []
+files1 = pd.read_excel('/home/user/xuxiao/ABAFnet/audio_data/CNRAC/CNRAC_list.xlsx', sheet_name='病人组')
+files1 = files1[(files1['age'] >= 13) & (files1['age'] <= 25)]['standard_id']
+files2 = pd.read_excel('/home/user/xuxiao/ABAFnet/audio_data/CNRAC/CNRAC_list.xlsx', sheet_name='健康组')
+files2 = files2[(files2['age'] >= 13) & (files2['age'] <= 25)]['standard_id']
+file_filter = pd.concat([files1, files2])
 label_list = []
 for folder, label in folder_labels.items():
     for root, dirs, files in os.walk(os.path.join(base_path, folder)):
         for file in files:
-            data_list_img1.append(os.path.join(feature_path, file[:-6], 'envelope.png'))
-            data_list_img2.append(os.path.join(feature_path, file[:-6], 'spectrogram.png'))
-            data_list_img3.append(os.path.join(feature_path, file[:-6], 'mel_spectrogram.png'))
-            data_list_num.append(df[df['name'] == file[:-6]].drop(columns=['name','class']).values.tolist()[0])
-            label_list.append(label)
-
+            if file[:-6] in file_filter.values:
+                data_list_img1.append(os.path.join(feature_path, file[:-6], 'envelope.png'))
+                data_list_img2.append(os.path.join(feature_path, file[:-6], 'spectrogram.png'))
+                data_list_img3.append(os.path.join(feature_path, file[:-6], 'mel_spectrogram.png'))
+                data_list_num.append(df[df['name'] == file[:-6]].drop(columns=['name','class']).values.tolist()[0])
+                label_list.append(label)
+print(len(data_list_img1), len(data_list_img2), len(data_list_img3), len(data_list_num), len(label_list), label_list.count(0), label_list.count(1))
 dataset = CustomDataset(data_list_img1=data_list_img1,data_list_img2=data_list_img2,data_list_img3=data_list_img3,data_list_num=data_list_num, label_list=label_list, transform=data_transform)
 
 # Set up K-Fold cross-validation, parameter grid, and other configurations
-k_folds = 5
+k_folds = 4
 num_epochs = 100
 device = torch.device('cuda')
 
@@ -121,7 +126,7 @@ param_grid = {
     'criterion': [nn.BCEWithLogitsLoss()],
     'activation': [nn.ReLU()],
     'optimizer': [optim.SGD],
-    'learning_rate': [0.001],
+    'learning_rate': [0.00001],
 }
 
 kf = StratifiedKFold(n_splits=k_folds)
@@ -164,6 +169,7 @@ for params in ParameterGrid(param_grid):
 
     for train_idx, val_idx in kf.split(combined_data_list, label_list):
         print(f"Fold {fold_counter}")
+        print(f"Train: {len(train_idx)}, Validation: {len(val_idx)}")
         input_size_img1, input_size_img2, input_size_img3, input_size_num = dataset.feature_size()
         num_heads = 8  # 可以设置为其他值
         img_model = ImageModel(params['activation'])
@@ -172,11 +178,11 @@ for params in ParameterGrid(param_grid):
 
         train_set = Subset(dataset, train_idx)
         val_set= Subset(dataset, val_idx)
-        train_loader = DataLoader(train_set, batch_size=32, shuffle=True)
-        val_loader = DataLoader(val_set, batch_size=32, shuffle=False)
+        train_loader = DataLoader(train_set, batch_size=16, shuffle=True)
+        val_loader = DataLoader(val_set, batch_size=16, shuffle=False)
         criterion = params['criterion']
         optimizer_class = params['optimizer']
-        val_acc, best_fold_model, train_time, val_time = train_and_evaluate(model, train_loader, val_loader, criterion, optimizer_class, params['learning_rate'], device, num_epochs, patience=20)
+        val_acc, best_fold_model, train_time, val_time = train_and_evaluate(model, train_loader, val_loader, criterion, optimizer_class, params['learning_rate'], device, num_epochs, patience=10)
         total_train_time += train_time
         total_test_time += val_time
 
@@ -260,9 +266,3 @@ print(f"Recall: {avg_recall:.3f}±{std_recall:.2f}")
 print(f"F1: {avg_f1:.3f}±{std_f1:.2f}")
 print(f"ROC AUC: {avg_roc:.3f}±{std_roc:.2f}")
 print("Total confusion matrix:\n", total_confusion_matrix)
-
-# 保存模型和 ROC 曲线
-# torch.save(best_model.state_dict(), '/home/user/xuxiao/ABAFnet/model/'+'best_model.pth')
-# import pickle
-# with open("/home/user/xuxiao/ABAFnet/draw/roc_curve_data_fusion.pkl", "wb") as f:
-#     pickle.dump(roc_curves, f)

@@ -15,6 +15,7 @@ from sklearn.model_selection import StratifiedKFold, ParameterGrid
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 from sklearn.metrics import roc_auc_score, confusion_matrix
 from sklearn.metrics import roc_curve, auc
+from sklearn.utils import resample
 import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.utils import resample
@@ -23,6 +24,8 @@ from MyAttention import MyAttention
 from ImageModel import ImageModel
 from NumModel import NumModel
 from FusionModel import FusionModel
+import warnings
+warnings.filterwarnings("ignore")
 
 def train_and_evaluate(model, train_loader, val_loader, criterion, optimizer_class, learning_rate, device, num_epochs, patience):
     start_time = time.time()
@@ -69,7 +72,7 @@ def train_and_evaluate(model, train_loader, val_loader, criterion, optimizer_cla
     train_time = time.time() - start_time
     return best_val_acc, best_model, train_time
 
-def run_experiment(data, labels, experiment_name, num_resamples=10):
+def run_experiment(data, labels, experiment_name, num_resamples=1):
     all_accuracies = []
     all_precisions = []
     all_recalls = []
@@ -114,7 +117,7 @@ def run_experiment(data, labels, experiment_name, num_resamples=10):
                 val_loader = DataLoader(val_set, batch_size=32, shuffle=False)
                 criterion = params['criterion']
                 optimizer_class = params['optimizer']
-                val_acc, best_fold_model, train_time = train_and_evaluate(model, train_loader, val_loader, criterion, optimizer_class, params['learning_rate'], device, num_epochs, patience=20)
+                val_acc, best_fold_model, train_time = train_and_evaluate(model, train_loader, val_loader, criterion, optimizer_class, params['learning_rate'], device, num_epochs, patience=10)
 
                 val_true = np.concatenate([labels.numpy() for (_, _, _, _, labels) in val_loader], axis=0)
                 val_preds = []
@@ -130,10 +133,10 @@ def run_experiment(data, labels, experiment_name, num_resamples=10):
                 val_preds = np.array(val_preds)
                 val_probs = np.array(val_probs)
 
-                precision = precision_score(val_true, val_preds)
-                recall = recall_score(val_true, val_preds)
-                f1 = f1_score(val_true, val_preds)
-                roc = roc_auc_score(val_true, val_probs)
+                precision = precision_score(val_true, val_preds, average='macro')
+                recall = recall_score(val_true, val_preds, average='macro')
+                f1 = f1_score(val_true, val_preds, average='macro')
+                roc = roc_auc_score(val_true, val_probs, average='macro')
 
                 all_accuracies.append(val_acc)
                 all_precisions.append(precision)
@@ -178,7 +181,7 @@ folder_labels = {
 
 base_path = '/home/user/xuxiao/ABAFnet/audio_data/CNRAC'
 feature_path = '/home/user/xuxiao/ABAFnet/features/CNRAC_features'
-df = pd.read_csv('/home/user/xuxiao/ABAFnet/CNRAC_features/emo_large_res.csv')
+df = pd.read_csv('/home/user/xuxiao/ABAFnet/features/CNRAC_features/emo_large_res.csv')
 
 group_data = {}
 group_labels = {}
@@ -203,17 +206,29 @@ experiments = [
     ("NC vs Mild", "NC", "Mild"),
     ("NC vs Moderate", "NC", "Moderate"),
     ("NC vs Severe", "NC", "Severe"),
-    ("Mild vs Moderate", "Mild", "Moderate"),
-    ("Mild vs Severe", "Mild", "Severe"),
-    ("Moderate vs Severe", "Moderate", "Severe"),
+    # ("Mild vs Moderate", "Mild", "Moderate"),
+    # ("Mild vs Severe", "Mild", "Severe"),
+    # ("Moderate vs Severe", "Moderate", "Severe"),
 ]
 
 for experiment_name, group1, group2 in experiments:
     group1_data = group_data[group1]
     group1_labels = group_labels[group1]
-    group2_data = group_data[group2]
+    group2_data = group_data[group2] 
     group2_labels = group_labels[group2]
+
+    # 对多数类进行降采样
+    # if len(group1_labels) > len(group2_labels):
+    #     group1_data, group1_labels = resample(group1_data, group1_labels, 
+    #                                           replace=False, n_samples=min(int(1.5*len(group2_labels)),len(group1_labels)), 
+    #                                           random_state=0) 
+    # else:
+    #     group2_data, group2_labels = resample(group2_data, group2_labels,
+    #                                           replace=False, n_samples=min(int(1.5*len(group1_labels)),len(group2_labels)), 
+    #                                           random_state=0) 
+        
     combined_data = np.concatenate([group1_data, group2_data], axis=0)
     combined_labels = np.concatenate([group1_labels, group2_labels], axis=0)
+    print(combined_labels)
 
     run_experiment(combined_data, combined_labels, experiment_name)

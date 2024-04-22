@@ -21,7 +21,7 @@ from CustomDataset import CustomDataset
 from MyAttention import MyAttention
 from ImageModel import ImageModel
 from NumModel import NumModel
-from FusionModel import FusionModel
+from FusionModel import FusionModel, FusionWithoutLSTMModel, FusionWithoutAttentionModel
 
 
 def train_and_evaluate(model, train_loader, val_loader, criterion, optimizer_class, learning_rate, device, num_epochs, patience):
@@ -121,7 +121,7 @@ param_grid = {
     'criterion': [nn.BCEWithLogitsLoss()],
     'activation': [nn.ReLU()],
     'optimizer': [optim.SGD],
-    'learning_rate': [0.001],
+    'learning_rate': [0.0001],
 }
 
 kf = StratifiedKFold(n_splits=k_folds)
@@ -168,7 +168,8 @@ for params in ParameterGrid(param_grid):
         num_heads = 8  # 可以设置为其他值
         img_model = ImageModel(params['activation'])
         num_model = NumModel(input_size_num)
-        model = FusionModel(img_model, num_model, num_heads=num_heads)
+        model = FusionWithoutLSTMModel(img_model, num_model, num_heads=num_heads)
+        # model = FusionWithoutAttentionModel(img_model, num_model)
 
         train_set = Subset(dataset, train_idx)
         val_set= Subset(dataset, val_idx)
@@ -176,7 +177,7 @@ for params in ParameterGrid(param_grid):
         val_loader = DataLoader(val_set, batch_size=32, shuffle=False)
         criterion = params['criterion']
         optimizer_class = params['optimizer']
-        val_acc, best_fold_model, train_time, val_time = train_and_evaluate(model, train_loader, val_loader, criterion, optimizer_class, params['learning_rate'], device, num_epochs, patience=20)
+        val_acc, best_fold_model, train_time, val_time = train_and_evaluate(model, train_loader, val_loader, criterion, optimizer_class, params['learning_rate'], device, num_epochs, patience=10)
         total_train_time += train_time
         total_test_time += val_time
 
@@ -261,8 +262,3 @@ print(f"F1: {avg_f1:.3f}±{std_f1:.2f}")
 print(f"ROC AUC: {avg_roc:.3f}±{std_roc:.2f}")
 print("Total confusion matrix:\n", total_confusion_matrix)
 
-# 保存模型和 ROC 曲线
-# torch.save(best_model.state_dict(), '/home/user/xuxiao/ABAFnet/model/'+'best_model.pth')
-# import pickle
-# with open("/home/user/xuxiao/ABAFnet/draw/roc_curve_data_fusion.pkl", "wb") as f:
-#     pickle.dump(roc_curves, f)

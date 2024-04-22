@@ -59,7 +59,7 @@ def train_and_evaluate(model, train_loader, val_loader, criterion, optimizer_cla
             for (img1, img2, img3, num_features, labels) in val_loader:
                 img1, img2, img3, num_features, labels = img1.to(device), img2.to(device), img3.to(device), num_features.to(device), labels.to(device)
                 outputs = model(img1, img2, img3, num_features)
-                preds = (torch.sigmoid(outputs.view(-1)) > 0.5).cpu().numpy()
+                preds = torch.softmax(outputs, dim=1).argmax(dim=1).cpu().numpy()
                 val_preds.extend(preds)
                 val_true.extend(labels.cpu().numpy())
         val_end_time = time.time()  # 验证结束时间
@@ -83,7 +83,6 @@ def train_and_evaluate(model, train_loader, val_loader, criterion, optimizer_cla
 
     return best_val_acc, best_model, train_time, val_time
 
-
 data_transform = transforms.Compose([
     transforms.Resize((224, 224)),
     transforms.ToTensor(),
@@ -93,8 +92,8 @@ data_transform = transforms.Compose([
 folder_labels = {
     "NC": 0,
     "Mild": 1,
-    "Moderate": 1,
-    "Severe": 1,
+    "Moderate": 2,
+    "Severe": 3,
 }
 base_path = '/home/user/xuxiao/ABAFnet/audio_data/CNRAC'
 feature_path = '/home/user/xuxiao/ABAFnet/features/CNRAC_features'
@@ -110,7 +109,21 @@ for folder, label in folder_labels.items():
             data_list_num.append(df[df['name'] == file[:-6]].drop(columns=['name','class']).values.tolist()[0])
             label_list.append(label)
 
-dataset = CustomDataset(data_list_img1=data_list_img1,data_list_img2=data_list_img2,data_list_img3=data_list_img3,data_list_num=data_list_num, label_list=label_list, transform=data_transform)
+# 对不平衡数据进行降采样平衡处理
+min_samples = min(np.bincount(label_list))
+balanced_data_list_img1, balanced_data_list_img2, balanced_data_list_img3 = [], [], []
+balanced_data_list_num, balanced_label_list = [], []
+for label in range(4):
+    indices = [i for i, x in enumerate(label_list) if x == label]
+    sampled_indices = random.sample(indices, min_samples)
+    for idx in sampled_indices:
+        balanced_data_list_img1.append(data_list_img1[idx])
+        balanced_data_list_img2.append(data_list_img2[idx])
+        balanced_data_list_img3.append(data_list_img3[idx])
+        balanced_data_list_num.append(data_list_num[idx])
+        balanced_label_list.append(label_list[idx])
+print(balanced_label_list)
+dataset = CustomDataset(data_list_img1=balanced_data_list_img1,data_list_img2=balanced_data_list_img2,data_list_img3=balanced_data_list_img3,data_list_num=balanced_data_list_num, label_list=balanced_label_list, transform=data_transform)
 
 # Set up K-Fold cross-validation, parameter grid, and other configurations
 k_folds = 5
@@ -118,10 +131,10 @@ num_epochs = 100
 device = torch.device('cuda')
 
 param_grid = {
-    'criterion': [nn.BCEWithLogitsLoss()],
-    'activation': [nn.ReLU()],
+    'criterion': [nn.CrossEntropyLoss()],  # 使用交叉熵损失函数
+    'activation': [nn.GELU()],
     'optimizer': [optim.SGD],
-    'learning_rate': [0.001],
+    'learning_rate': [0.0001],
 }
 
 kf = StratifiedKFold(n_splits=k_folds)
@@ -150,22 +163,22 @@ for params in ParameterGrid(param_grid):
     avg_roc = 0
     total_confusion_matrix = None
 
-    # 在每一个参数设置开始前，清空列表
+    # 在每一个参数设置开始前,清空列表
     accuracy_list.clear()
     precision_list.clear()
     recall_list.clear()
     f1_list.clear()
     roc_list.clear()
 
-    mean_tpr = 0.0
-    mean_fpr = np.linspace(0, 1, 100)
+    # mean_tpr = 0.0
+    # mean_fpr = np.linspace(0, 1, 100)
 
-    combined_data_list = list(zip(data_list_img1, data_list_img2, data_list_img3, data_list_num))
+    combined_data_list = list(zip(balanced_data_list_img1, balanced_data_list_img2, balanced_data_list_img3, balanced_data_list_num))
 
-    for train_idx, val_idx in kf.split(combined_data_list, label_list):
+    for train_idx, val_idx in kf.split(combined_data_list, balanced_label_list):
         print(f"Fold {fold_counter}")
         input_size_img1, input_size_img2, input_size_img3, input_size_num = dataset.feature_size()
-        num_heads = 8  # 可以设置为其他值
+        num_heads = 4
         img_model = ImageModel(params['activation'])
         num_model = NumModel(input_size_num)
         model = FusionModel(img_model, num_model, num_heads=num_heads)
@@ -176,9 +189,7 @@ for params in ParameterGrid(param_grid):
         val_loader = DataLoader(val_set, batch_size=32, shuffle=False)
         criterion = params['criterion']
         optimizer_class = params['optimizer']
-        val_acc, best_fold_model, train_time, val_time = train_and_evaluate(model, train_loader, val_loader, criterion, optimizer_class, params['learning_rate'], device, num_epochs, patience=20)
-        total_train_time += train_time
-        total_test_time += val_time
+        val_acc, best_fold_model, train_time, val_time = train_and_evaluate(model, train_loader, val_loader, criterion, optimizer_class, params['learning_rate'], device, num_epochs, patience=5)
 
         val_true = np.concatenate([labels.numpy() for (_, _, _, _, labels) in val_loader], axis=0)
         val_preds = []
@@ -187,17 +198,17 @@ for params in ParameterGrid(param_grid):
             for (img1, img2, img3, num_features, _) in val_loader:
                 img1, img2, img3, num_features = img1.to(device), img2.to(device), img3.to(device), num_features.to(device)
                 outputs = model(img1, img2, img3, num_features)
-                preds = (torch.sigmoid(outputs.view(-1)) > 0.5).cpu().numpy()
-                probs = torch.sigmoid(outputs.view(-1)).cpu().numpy()
+                preds = outputs.argmax(dim=1).cpu().numpy()  # 取概率最大的类别
+                probs = torch.softmax(outputs, dim=1).cpu().numpy()  # 计算softmax概率
                 val_preds.extend(preds)
                 val_probs.extend(probs)
         val_preds = np.array(val_preds)
         val_probs = np.array(val_probs)
 
-        precision = precision_score(val_true, val_preds)
-        recall = recall_score(val_true, val_preds)
-        f1 = f1_score(val_true, val_preds)
-        roc = roc_auc_score(val_true, val_probs)
+        precision = precision_score(val_true, val_preds, average='macro')
+        recall = recall_score(val_true, val_preds, average='macro') 
+        f1 = f1_score(val_true, val_preds, average='macro')
+        # roc = roc_auc_score(val_true, val_probs, multi_class='ovr')
 
         # Calculate confusion matrix
         confusion_mat = confusion_matrix(val_true, val_preds)
@@ -211,26 +222,26 @@ for params in ParameterGrid(param_grid):
         precision_list.append(precision)
         recall_list.append(recall)
         f1_list.append(f1)
-        roc_list.append(roc)
+        # roc_list.append(roc)
 
         avg_accuracy += val_acc
         avg_precision += precision
         avg_recall += recall
         avg_f1 += f1
-        avg_roc += roc
+        # avg_roc += roc
 
-        fpr, tpr, _ = roc_curve(val_true, val_probs)
-        mean_tpr += np.interp(mean_fpr, fpr, tpr)
-        mean_tpr[0] = 0.0
+        # fpr, tpr, _ = roc_curve(val_true, val_probs[:,1], pos_label=1)
+        # mean_tpr += np.interp(mean_fpr, fpr, tpr)
+        # mean_tpr[0] = 0.0
 
-        roc_curves.append((fpr, tpr))
+        # roc_curves.append((fpr, tpr))
 
         fold_counter += 1
 
-    mean_tpr /= k_folds
-    mean_tpr[-1] = 1.0
+    # mean_tpr /= k_folds
+    # mean_tpr[-1] = 1.0
 
-    roc_curves.append((mean_fpr, mean_tpr))
+    # roc_curves.append((mean_fpr, mean_tpr))
 
     param_counter += 1
 
@@ -238,31 +249,23 @@ for params in ParameterGrid(param_grid):
     avg_precision /= k_folds
     avg_recall /= k_folds
     avg_f1 /= k_folds
-    avg_roc /= k_folds
+    # avg_roc /= k_folds
 
     std_accuracy = np.std(accuracy_list)
     std_precision = np.std(precision_list)
     std_recall = np.std(recall_list)
     std_f1 = np.std(f1_list)
-    std_roc = np.std(roc_list)
+    # std_roc = np.std(roc_list)
 
     if avg_f1 > best_score:
         best_score = avg_f1
         best_params = params
         best_model = best_fold_model
 
-print(f"Total training time for all folds: {total_train_time} seconds.")
-print(f"Total testing time for all folds: {total_test_time} seconds.")
 print("Best parameters:", best_params)
 print(f"Accuracy: {avg_accuracy:.3f}±{std_accuracy:.2f}")
 print(f"Precision: {avg_precision:.3f}±{std_precision:.2f}")
 print(f"Recall: {avg_recall:.3f}±{std_recall:.2f}")
 print(f"F1: {avg_f1:.3f}±{std_f1:.2f}")
-print(f"ROC AUC: {avg_roc:.3f}±{std_roc:.2f}")
+# print(f"ROC AUC: {avg_roc:.3f}±{std_roc:.2f}")
 print("Total confusion matrix:\n", total_confusion_matrix)
-
-# 保存模型和 ROC 曲线
-# torch.save(best_model.state_dict(), '/home/user/xuxiao/ABAFnet/model/'+'best_model.pth')
-# import pickle
-# with open("/home/user/xuxiao/ABAFnet/draw/roc_curve_data_fusion.pkl", "wb") as f:
-#     pickle.dump(roc_curves, f)

@@ -185,9 +185,3 @@ print(f"Recall: {recall:.3f}")
 print(f"F1: {f1:.3f}")
 print(f"ROC AUC: {roc:.3f}")
 print("Total confusion matrix:\n", total_confusion_matrix)
-
-import pickle
-precision, recall, _ = precision_recall_curve(val_true, val_probs)
-pr_curve_data = (recall, precision)
-with open("/home/user/xuxiao/ABAFnet/draw/pr_curve_data_vt_phq_"+str(score)+".pkl", "wb") as f:
-    pickle.dump(pr_curve_data, f)
