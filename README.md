@@ -60,13 +60,6 @@ Our proposed ABAFnet achieved state-of-the-art performance in speech-based depre
 ---
 
 ## 📄 Citation
-Paper Link: 
-Arxiv: https://arxiv.org/pdf/2308.12478v1.pdf
-
-
-Research Gate: https://www.researchgate.net/publication/373364067_Attention-Based_Acoustic_Feature_Fusion_Network_for_Depression_Detection#fullTextFileContent
-
-If you find this work helpful, please cite our paper:
 ```
 @misc{xu2023attentionbased,
       title={Attention-Based Acoustic Feature Fusion Network for Depression Detection}, 
