@@ -27,7 +27,7 @@ For audio/video related data and research, please stay tuned to this code reposi
 
 This repository contains the implementation of our proposed **ABAFnet**, a novel integrated speech feature attention-based recurrent network for efficient depression detection and analysis. The main goal of this project is to provide an accurate and efficient approach for detecting depression using speech data.
 
-_**Note:** The code we released is not compelete in some detail due to the data privacy, but the model structure parts are Complete Edition. For our concern about data privacy, we have hidden the part about the data, please contact us by email if you need._
+_**Note:** The code we released is not compelete in some detail due to the data privacy, but the model structure parts are Complete Edition. For our concern about data privacy, we have hidden the part about the data._
 
 ---
 
