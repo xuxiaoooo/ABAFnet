@@ -54,20 +54,14 @@ cd ABAFnet
 
 ## 📄 引用
 ```
-@misc{xu2023attentionbased,
-      title={Attention-Based Acoustic Feature Fusion Network for Depression Detection}, 
-      author={Xiao Xu and Yang Wang and Xinru Wei and Fei Wang and Xizhe Zhang},
-      year={2023},
-      eprint={2308.12478},
-      archivePrefix={arXiv},
-      primaryClass={cs.SD}
+@article{xu2024attention,
+  title={Attention-based acoustic feature fusion network for depression detection},
+  author={Xu, Xiao and Wang, Yang and Wei, Xinru and Wang, Fei and Zhang, Xizhe},
+  journal={Neurocomputing},
+  pages={128209},
+  year={2024},
+  publisher={Elsevier}
 }
 ```
-
----
-
-## 📧 联系
-
-有任何问题，欢迎开启一个 Issue或者通过 xuxiaooo1111@gmail.com 与我们联系。
 
 ---
