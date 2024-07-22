@@ -66,9 +66,3 @@ Our proposed ABAFnet achieved state-of-the-art performance in speech-based depre
 ```
 
 ---
-
-## 📧 Contact
-
-For any questions, feel free to open an issue or contact us at xuxiaooo1111@gmail.com
-
----
