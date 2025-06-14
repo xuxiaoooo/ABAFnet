@@ -1,7 +1,9 @@
 **[English](README.md)** | **[中文](README_CN.md)**
 
 # ABAFnet
-Attention-Based Acoustic Feature Fusion Network for Depression Detection  
+Attention-Based Acoustic Feature Fusion Network for Depression Detection
+
+Latest Address [Codebase](https://github.com/njnklab/ABAFnet.git)
 
 <p align="center">
   <img src="https://github.com/xuxiaoooo/ABAFnet/blob/main/draw/LOGO 1.png" width="600" height="300" alt="logo"/>
